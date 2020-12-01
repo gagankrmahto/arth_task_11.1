@@ -1,0 +1,57 @@
+- hosts: all
+  vars_files:
+  - var.yml
+  tasks:
+  - name: "create mount point dir for cdrom"
+    file:
+      state: directory
+      path: "{{ dvd_dir }}"
+
+  - mount:
+      src: "/dev/cdrom"
+      path: "{{ dvd_dir }}"
+      state: mounted
+      fstype: "iso9660"
+
+  - yum_repository:
+      baseurl: "{{ dvd_dir }}/AppStream"
+      name: "mydvd1"
+      description: "this is dvd 1"
+      gpgcheck: no
+
+  - yum_repository:
+      baseurl: "{{ dvd_dir }}/BaseOS"
+      name: "mydvd2"
+      description: "this is dvd2"
+      gpgcheck: no
+
+  - package:
+      name: "python3"
+      state: present
+      
+  - name: "installing gdown  module on host system"
+    pip:
+      name: gdown
+  
+  - stat: path=/root/jdk-8u171-linux-x64.rpm
+    register: jdk_ex
+
+  - name: "Downloading jdk from drive"
+    command:
+      cmd: "gdown --id {{ jdk_id }}"
+    when: not jdk_ex.stat.exists
+
+  - stat: path=/root/hadoop-1.2.1-1.x86_64.rpm
+    register: hadoop_ex
+ 
+  - name: "Downloading hadoop software from drive"
+    command:
+      cmd: "gdown --id {{ hadoop_id }}"
+    when: not hadoop_ex.stat.exists
+ 
+  - name: "Installed hadoop"
+    shell: "rpm -i /root/hadoop-1.2.1-1.x86_64.rpm --force"
+
+
+
+

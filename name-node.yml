@@ -1,0 +1,35 @@
+- hosts: 192.168.225.41
+  vars_files:
+  - var.yml
+  tasks:
+  - name: "created name node directory"
+    file:
+      path: "/{{ namenode_dir }}"
+      state: directory
+    notify: "Formatting name node"
+  
+  - name: "copying the core-site"
+    template:
+      dest: /etc/hadoop/
+      src: /root/ansible-workspaces/hadoop/namenode/core-site.xml
+
+  - name: "copying the hdfs-site"
+    template:
+      dest: /etc/hadoop/
+      src: /root/ansible-workspaces/hadoop/namenode/hdfs-site.xml
+
+  - name: "Formatting name node"
+    shell: "echo Y | hadoop namenode -format"
+
+  - name: "Started NameNode"
+    shell: "hadoop-daemon.sh start namenode"
+
+  - firewalld:
+      port: "9001/tcp"
+      state: enabled
+      permanent: yes
+      immediate: yes
+
+handlers:
+  - name: "Formatting name node"
+    shell: "echo Y | hadoop namenode -format"

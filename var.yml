@@ -1,0 +1,6 @@
+jdk_id: "17UWQNVdBdGlyualwWX4Cc96KyZhD-lxz"
+hadoop_id: "1541gbFeGZZJ5k9Qx65D04lpeNBw87rM5"
+namenode_dir: "/nn"
+datanode_dir: "/dn"
+namenode_ip: "192.268.225.41"
+dvd_dir: /dvd

@@ -1,0 +1,23 @@
+- hosts: 192.168.225.49
+  vars_files:
+  - var.yml
+  tasks:
+  - name: "Creating datanode"
+    file:
+      path: "/{{ datanode_dir }}"
+      state: directory
+
+  - name: "configuring core site"
+    template:
+      dest: "/etc/hadoop/core-site.xml"
+      src: "./datanode/core-site.xml"
+
+  - name: "configuring hdfs site"
+    template:
+      dest: "/etc/hadoop/hdfs-site.xml"
+      src: "./datanode/hdfs-site.xml"
+
+  - name: "Starting the datanode daemon"
+    command:
+      cmd: "hadoop-daemon.sh start datanode"
+
